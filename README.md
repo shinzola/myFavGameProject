@@ -1,16 +1,57 @@
-# myfavgame
+# 🎮 MyFavGame
 
-A new Flutter project.
+Aplicativo Flutter para gerenciar sua lista de jogos favoritos, com banco de dados local (**SQLite**) e consumo de dados externos via API.
 
-## Getting Started
+![Flutter](https://img.shields.io/badge/Flutter-Framework-blue?logo=flutter)
+![License](https://img.shields.io/badge/license-MIT-green)
+![Status](https://img.shields.io/badge/status-Em%20Desenvolvimento-yellow)
 
-This project is a starting point for a Flutter application.
+---
 
-A few resources to get you started if this is your first Flutter project:
+## 📱 Funcionalidades
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+- 🔐 Sistema de login e cadastro de usuários.
+- 🎯 CRUD completo de:
+  - Jogos 🎮
+  - Gêneros 🎧
+  - Plataformas 🖥️
+  - Status ✅
+- 🔗 Consumo de API externa ([RAWG](https://rawg.io/apidocs)) para buscar dados dos jogos.
+- 💾 Armazenamento local com **SQLite**.
+- 🌐 Funcionalidade híbrida: dados locais + dados online.
+- 🔍 Filtros por plataforma, gênero e status.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+---
+
+## 🚀 Tecnologias utilizadas
+
+- ✔️ Flutter
+- ✔️ SQFlite (SQLite)
+- ✔️ HTTP (API)
+- ✔️ Path Provider
+- ✔️ Dart
+
+---
+
+## 🔧 Instalação e execução
+
+### Pré-requisitos
+
+- ✅ Flutter instalado ([Guia oficial](https://docs.flutter.dev/get-started/install))
+- ✅ Emulador Android, dispositivo físico ou simulador iOS
+- ✅ Chave da API [RAWG](https://rawg.io/apidocs) *(opcional para funcionalidades online)*
+
+### Executando o projeto
+
+```bash
+# Clone o repositório
+git clone https://github.com/seu-usuario/MyFavGame.git
+
+# Acesse o diretório
+cd MyFavGame
+
+# Instale as dependências
+flutter pub get
+
+# Execute o app
+flutter run
