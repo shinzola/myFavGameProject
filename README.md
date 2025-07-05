@@ -1,7 +1,7 @@
 
 # 🎮 MyFavGame
 
-MyFavGame é um aplicativo Flutter onde os usuários podem buscar, favoritar e visualizar informações sobre jogos utilizando a API RAWG. O app também permite cadastro/login com persistência de sessão local, integrando banco de dados SQLite para armazenar os jogos favoritos do usuário.
+MyFavGame é um aplicativo Flutter onde os usuários podem buscar, favoritar e visualizar jogos utilizando a API RAWG. O app também permite cadastro/login com persistência de sessão local, integrando banco de dados SQLite para armazenar os jogos favoritos do usuário.
 
 ---
 
@@ -82,18 +82,6 @@ O APK será gerado em:
 build/app/outputs/flutter-apk/app-release.apk
 ```
 
----
-
-## 🔐 Permissões Android
-
-Adicione a seguinte permissão ao arquivo `AndroidManifest.xml`:
-
-```xml
-<uses-permission android:name="android.permission.INTERNET"/>
-```
-
----
-
 ## 🌐 Sobre a RAWG API
 
 Este app utiliza a [RAWG Video Games Database API](https://rawg.io/apidocs). Para usar, registre-se e obtenha sua `API_KEY`. Insira essa chave no endpoint de busca, por exemplo:
@@ -109,18 +97,3 @@ final response = await http.get(Uri.parse('https://api.rawg.io/api/games?key=SUA
 Desenvolvido por **Rodrigo “Shin” Duarte**  
 [![GitHub](https://img.shields.io/badge/GitHub-shinzola-181717?style=for-the-badge&logo=github)](https://github.com/shinzola)
 
----
-
-## 📌 Status do Projeto
-
-✅ MVP concluído  
-🛠️ Em expansão com mais recursos como:  
-- Avaliações dos usuários  
-- Sistema de status dos jogos (zerado, jogando, etc)  
-- Tela de edição de perfil  
-
----
-
-## 📄 Licença
-
-Este projeto está sob a licença MIT. Sinta-se à vontade para utilizar e modificar.
