@@ -1,55 +1,126 @@
+
 # 🎮 MyFavGame
 
-Aplicativo Flutter para gerenciar sua lista de jogos favoritos, com banco de dados local (**SQLite**) e consumo de dados externos via API.
-
-![Flutter](https://img.shields.io/badge/Flutter-Framework-blue?logo=flutter)
-![License](https://img.shields.io/badge/license-MIT-green)
-![Status](https://img.shields.io/badge/status-Em%20Desenvolvimento-yellow)
+MyFavGame é um aplicativo Flutter onde os usuários podem buscar, favoritar e visualizar informações sobre jogos utilizando a API RAWG. O app também permite cadastro/login com persistência de sessão local, integrando banco de dados SQLite para armazenar os jogos favoritos do usuário.
 
 ---
 
 ## 📱 Funcionalidades
 
-- 🔐 Sistema de login e cadastro de usuários.
-- 🎯 Banco de dados contendo:
-  - Jogos 🎮
-  - Usuário 🎮
-- 🔗 Consumo de API externa ([RAWG](https://rawg.io/apidocs)) para buscar dados dos jogos.
-- 💾 Armazenamento local com **SQLite**.
-- 🌐 Funcionalidade híbrida: dados locais + dados online.
-- 🔍 Filtros por plataforma, gênero e status.
+- 🔍 **Pesquisar Jogos**: busca por nome diretamente na API RAWG.
+- ❤️ **Favoritar Jogos**: armazena os jogos localmente com SQLite por usuário logado.
+- 👤 **Cadastro e Login**: sistema de autenticação simples com persistência via `SharedPreferences`.
+- 🧠 **Sessão Persistente**: mantém o usuário logado mesmo após fechar o app.
+- 🧾 **Perfil do Usuário**: exibe nome, email e total de jogos favoritados.
+- 💡 **Remover Favoritos**: gerencia sua lista de favoritos com apenas um clique.
+- 🌙 **Tema Escuro**: interface amigável com estilo moderno e escuro.
 
 ---
 
-## 🚀 Tecnologias utilizadas
+## 🛠️ Tecnologias Usadas
 
-- ✔️ Flutter
-- ✔️ SQFlite (SQLite)
-- ✔️ HTTP (API)
-- ✔️ Path Provider
-- ✔️ Dart
+| Tecnologia             | Função                                      |
+|------------------------|---------------------------------------------|
+| Flutter                | Framework para desenvolvimento do app       |
+| Dart                   | Linguagem de programação do app             |
+| SQLite (sqflite)       | Banco de dados local                        |
+| RAWG API               | API pública para informações de jogos       |
+| SharedPreferences      | Armazenamento de sessão (usuário logado)    |
+| Path Provider          | Acesso a diretórios locais                  |
+| URL Launcher           | Abertura de links externos (GitHub, etc)    |
 
 ---
 
-## 🔧 Instalação e execução
+## 📁 Estrutura de Pastas
 
-### Pré-requisitos
+```
+lib/
+├── Classes/          # Modelos (Usuario, Jogo, etc)
+├── DAO/              # Classes DAO (JogoDAO, UsuarioDAO)
+├── Database/         # Classe de conexão com SQLite
+├── Screens/          # Telas do app (Login, Cadastro, Home, etc)
+├── Utils/            # Funções auxiliares (sessão, validações)
+└── main.dart         # Entrada do app
+```
 
-- ✅ Flutter instalado ([Guia oficial](https://docs.flutter.dev/get-started/install))
-- ✅ Emulador Android, dispositivo físico que possua Android
-- ✅ Chave da API [RAWG](https://rawg.io/apidocs) *(opcional para funcionalidades online)*
+---
 
-### Executando o projeto
+## ⚙️ Como Executar o Projeto
+
+### ✅ Pré-requisitos
+
+- [Flutter](https://flutter.dev/docs/get-started/install) instalado
+- Android Studio ou VSCode com extensões Flutter/Dart
+- Emulador Android ou dispositivo físico
+
+---
+
+### 📦 Instalação
 
 ```bash
-# Clone o repositório
-git clone https://github.com/shinzola/myFavGameProject
-
-# Acesse o diretório
-cd MyFavGame
-
-# Instale as dependências
+git clone https://github.com/shinzola/myfavgame.git
+cd myfavgame
 flutter pub get
+```
 
-# Execute o app
+---
+
+### ▶️ Executar
+
+```bash
 flutter run
+```
+
+Ou, para gerar um APK:
+
+```bash
+flutter build apk
+```
+
+O APK será gerado em:
+```
+build/app/outputs/flutter-apk/app-release.apk
+```
+
+---
+
+## 🔐 Permissões Android
+
+Adicione a seguinte permissão ao arquivo `AndroidManifest.xml`:
+
+```xml
+<uses-permission android:name="android.permission.INTERNET"/>
+```
+
+---
+
+## 🌐 Sobre a RAWG API
+
+Este app utiliza a [RAWG Video Games Database API](https://rawg.io/apidocs). Para usar, registre-se e obtenha sua `API_KEY`. Insira essa chave no endpoint de busca, por exemplo:
+
+```dart
+final response = await http.get(Uri.parse('https://api.rawg.io/api/games?key=SUA_API_KEY&search=$query'));
+```
+
+---
+
+## 🙋‍♂️ Autor
+
+Desenvolvido por **Rodrigo “Shin” Duarte**  
+[![GitHub](https://img.shields.io/badge/GitHub-shinzola-181717?style=for-the-badge&logo=github)](https://github.com/shinzola)
+
+---
+
+## 📌 Status do Projeto
+
+✅ MVP concluído  
+🛠️ Em expansão com mais recursos como:  
+- Avaliações dos usuários  
+- Sistema de status dos jogos (zerado, jogando, etc)  
+- Tela de edição de perfil  
+
+---
+
+## 📄 Licença
+
+Este projeto está sob a licença MIT. Sinta-se à vontade para utilizar e modificar.
