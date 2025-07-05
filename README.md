@@ -11,11 +11,9 @@ Aplicativo Flutter para gerenciar sua lista de jogos favoritos, com banco de dad
 ## 📱 Funcionalidades
 
 - 🔐 Sistema de login e cadastro de usuários.
-- 🎯 CRUD completo de:
+- 🎯 Banco de dados contendo:
   - Jogos 🎮
-  - Gêneros 🎧
-  - Plataformas 🖥️
-  - Status ✅
+  - Usuário 🎮
 - 🔗 Consumo de API externa ([RAWG](https://rawg.io/apidocs)) para buscar dados dos jogos.
 - 💾 Armazenamento local com **SQLite**.
 - 🌐 Funcionalidade híbrida: dados locais + dados online.
@@ -38,7 +36,7 @@ Aplicativo Flutter para gerenciar sua lista de jogos favoritos, com banco de dad
 ### Pré-requisitos
 
 - ✅ Flutter instalado ([Guia oficial](https://docs.flutter.dev/get-started/install))
-- ✅ Emulador Android, dispositivo físico ou simulador iOS
+- ✅ Emulador Android, dispositivo físico que possua Android
 - ✅ Chave da API [RAWG](https://rawg.io/apidocs) *(opcional para funcionalidades online)*
 
 ### Executando o projeto
