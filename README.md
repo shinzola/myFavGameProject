@@ -43,7 +43,7 @@ Aplicativo Flutter para gerenciar sua lista de jogos favoritos, com banco de dad
 
 ```bash
 # Clone o repositório
-git clone https://github.com/seu-usuario/MyFavGame.git
+git clone https://github.com/shinzola/myFavGameProject
 
 # Acesse o diretório
 cd MyFavGame
