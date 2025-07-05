@@ -1,12 +1,26 @@
 import 'package:sqflite/sqflite.dart';
-import 'DatabaseHelper.dart';
-import 'Usuario.dart';
+import '../Database/DatabaseHelper.dart';
+import '../Classes/Usuario.dart';
 
 class UsuarioDAO {
   final dbHelper = Databasehelper();
 
   Future<int> inserir(Usuario usuario) async {
     final db = await dbHelper.database;
+
+    // Verifica se já existe um usuário com o mesmo e-mail
+    final List<Map<String, dynamic>> existingUsers = await db.query(
+      'usuario',
+      where: 'email = ?',
+      whereArgs: [usuario.email],
+    );
+
+    if (existingUsers.isNotEmpty) {
+      // Já existe usuário com esse e-mail
+      return -1;
+    }
+
+    // Se não existe, insere normalmente
     return await db.insert('usuario', usuario.toMap());
   }
 
@@ -24,10 +38,20 @@ class UsuarioDAO {
     return null;
   }
 
-  Future<List<Usuario>> listar() async {
-    final db = await dbHelper.database;
-    final maps = await db.query('usuario');
-    return maps.map((e) => Usuario.fromMap(e)).toList();
+  Future<Usuario?> autenticar(String email, String senha) async {
+    final db = await Databasehelper.instance.database;
+
+    final resultado = await db.query(
+      'usuario',
+      where: 'email = ? AND senha = ?',
+      whereArgs: [email, senha],
+    );
+
+    if (resultado.isNotEmpty) {
+      return Usuario.fromMap(resultado.first);
+    } else {
+      return null;
+    }
   }
 
   Future<int> atualizar(Usuario usuario) async {

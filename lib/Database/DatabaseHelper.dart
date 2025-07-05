@@ -8,6 +8,7 @@ class Databasehelper {
     return _instance;
   }
   Databasehelper._internal();
+  static Databasehelper get instance => _instance;
   Future<Database> get database async {
     if (_database != null) return _database!;
     _database = await _initDatabase();
@@ -28,16 +29,7 @@ class Databasehelper {
       'CREATE TABLE IF NOT EXISTS usuario(id INTEGER PRIMARY KEY AUTOINCREMENT, nome TEXT NOT NULL, email TEXT NOT NULL, senha TEXT NOT NULL)',
     );
     await db.execute(
-      'CREATE TABLE IF NOT EXISTS genero( id INTEGER PRIMARY KEY AUTOINCREMENT, nome TEXT NOT NULL)',
-    );
-    await db.execute(
-      'CREATE TABLE IF NOT EXISTS plataforma(id INTEGER PRIMARY KEY AUTOINCREMENT, nome TEXT NOT NULL)',
-    );
-    await db.execute(
-      'CREATE TABLE IF NOT EXISTS status(id INTEGER PRIMARY KEY AUTOINCREMENT, nome TEXT NOT NULL)',
-    );
-    await db.execute(
-      'CREATE TABLE IF NOT EXISTS jogo(id INTEGER PRIMARY KEY AUTOINCREMENT, nome TEXT NOT NULL, descricao TEXT, imagem TEXT, nota REAL, data_lancamento TEXT, genero_id INTEGER, plataforma_id INTEGER, status_id INTEGER, usuario_id INTEGER NOT NULL, FOREIGN KEY (genero_id) REFERENCES Genero(id), FOREIGN KEY (plataforma_id) REFERENCES Plataforma(id), FOREIGN KEY (status_id) REFERENCES Status(id), FOREIGN KEY (usuario_id) REFERENCES Usuario(id))',
+      'CREATE TABLE IF NOT EXISTS jogo(id INTEGER PRIMARY KEY AUTOINCREMENT, nome TEXT NOT NULL, imagem TEXT, genero TEXT, usuario_id INTEGER NOT NULL, FOREIGN KEY (usuario_id) REFERENCES Usuario(id))',
     );
   }
 
