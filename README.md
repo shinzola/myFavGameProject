@@ -87,7 +87,7 @@ build/app/outputs/flutter-apk/app-release.apk
 Este app utiliza a [RAWG Video Games Database API](https://rawg.io/apidocs). Para usar, registre-se e obtenha sua `API_KEY`. Insira essa chave no endpoint de busca, por exemplo:
 
 ```dart
-  final String _apiKey = 'sua_API;
+  final String _apiKey = 'sua_API';
 ```
 
 ---
