@@ -4,7 +4,7 @@ import 'GameAPI.dart';
 
 class ApiService {
   final String _baseUrl = 'https://api.rawg.io/api';
-  final String _apiKey = 'a9e59fadecfc4b5db318c480d5925848';
+  final String _apiKey = ''; //Sua API você coloca aqui
 
   Future<List<GameAPI>> fetchGames({int page = 1}) async {
     final response = await http.get(
