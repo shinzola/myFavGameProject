@@ -24,6 +24,8 @@ class _HomeScreenState extends State<HomeScreen> {
     ).pushReplacement(MaterialPageRoute(builder: (context) => const Login()));
   }
 
+  final ScrollController _gameListScrollController = ScrollController();
+  Set<String> _favoritosIds = {};
   String? _filtroGenero;
   int _currentIndex = 0;
   final PageController _pageController = PageController();
@@ -59,6 +61,19 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  Future<void> _carregarFavoritos() async {
+    final prefs = await SharedPreferences.getInstance();
+    final usuarioId = prefs.getInt('usuario_id') ?? 0;
+
+    final jogoDAO = JogoDAO();
+    final jogosFavoritos = await jogoDAO.listarPorUsuario(usuarioId);
+
+    setState(() {
+      _usuarioId = usuarioId;
+      _favoritosIds = jogosFavoritos.map((jogo) => jogo.nome).toSet();
+    });
+  }
+
   String _nome = '';
   String _email = '';
   int? _usuarioId;
@@ -66,6 +81,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     _carregarDadosUsuario();
+    _carregarFavoritos();
     _fetchGames(_currentPage);
   }
 
@@ -178,6 +194,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 // LISTA DE JOGOS (GRID)
                 Expanded(
                   child: GridView.builder(
+                    controller: _gameListScrollController,
                     padding: const EdgeInsets.all(12),
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
@@ -247,29 +264,58 @@ class _HomeScreenState extends State<HomeScreen> {
                                           await SharedPreferences.getInstance();
                                       if (_usuarioId != null) {
                                         final jogoDAO = JogoDAO();
+                                        final nome = game.nome;
 
-                                        final jogo = Jogo(
-                                          nome: game.nome,
-                                          imagem: game.imagem,
-                                          usuarioId: _usuarioId!,
-                                        );
+                                        final jaFavoritado = _favoritosIds
+                                            .contains(nome);
 
-                                        final resultado = await jogoDAO.inserir(
-                                          jogo,
-                                        );
+                                        if (jaFavoritado) {
+                                          // Remover dos favoritos
+                                          final jogosUsuario = await jogoDAO
+                                              .listarPorUsuario(_usuarioId!);
+                                          final jogoParaRemover = jogosUsuario
+                                              .firstWhere(
+                                                (j) => j.nome == nome,
+                                                orElse: () => Jogo(
+                                                  id: -1,
+                                                  nome: '',
+                                                  imagem: '',
+                                                  usuarioId: _usuarioId!,
+                                                ),
+                                              );
 
-                                        if (resultado == -1) {
-                                          ScaffoldMessenger.of(
-                                            context,
-                                          ).showSnackBar(
-                                            const SnackBar(
-                                              content: Text(
-                                                'Jogo já está nos favoritos!',
+                                          if (jogoParaRemover.id != -1) {
+                                            await jogoDAO.deletar(
+                                              jogoParaRemover.id!,
+                                            );
+                                            setState(() {
+                                              _favoritosIds.remove(nome);
+                                            });
+
+                                            ScaffoldMessenger.of(
+                                              context,
+                                            ).showSnackBar(
+                                              const SnackBar(
+                                                content: Text(
+                                                  'Jogo removido dos favoritos',
+                                                ),
+                                                backgroundColor: Colors.red,
                                               ),
-                                              backgroundColor: Colors.orange,
-                                            ),
-                                          );
+                                            );
+                                          }
                                         } else {
+                                          // Adicionar aos favoritos
+                                          final novoJogo = Jogo(
+                                            nome: game.nome,
+                                            imagem: game.imagem,
+                                            usuarioId: _usuarioId!,
+                                          );
+
+                                          await jogoDAO.inserir(novoJogo);
+                                          setState(() {
+                                            _favoritosIds.add(nome);
+                                          });
+
                                           ScaffoldMessenger.of(
                                             context,
                                           ).showSnackBar(
@@ -283,17 +329,40 @@ class _HomeScreenState extends State<HomeScreen> {
                                         }
                                       }
                                     },
-
-                                    child: Container(
-                                      padding: const EdgeInsets.all(6),
-                                      decoration: BoxDecoration(
-                                        color: Colors.black54,
-                                        shape: BoxShape.circle,
+                                    child: AnimatedSwitcher(
+                                      duration: const Duration(
+                                        milliseconds: 300,
                                       ),
-                                      child: const Icon(
-                                        Icons.favorite_border,
-                                        color: Colors.white,
-                                        size: 20,
+                                      transitionBuilder: (child, animation) =>
+                                          ScaleTransition(
+                                            scale: animation,
+                                            child: child,
+                                          ),
+                                      child: Container(
+                                        padding: const EdgeInsets.all(6),
+                                        decoration: BoxDecoration(
+                                          color: Colors.black.withOpacity(0.6),
+                                          shape: BoxShape.circle,
+                                          border: Border.all(
+                                            color: Colors.white.withOpacity(
+                                              0.1,
+                                            ),
+                                            width: 1,
+                                          ),
+                                        ),
+                                        child: Icon(
+                                          _favoritosIds.contains(game.nome)
+                                              ? Icons.favorite
+                                              : Icons.favorite_border,
+                                          key: ValueKey(
+                                            _favoritosIds.contains(game.nome),
+                                          ),
+                                          color:
+                                              _favoritosIds.contains(game.nome)
+                                              ? Colors.red
+                                              : Colors.white,
+                                          size: 22,
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -361,6 +430,12 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                             onPressed: () {
                               _fetchGames(pageNum);
+
+                              _gameListScrollController.animateTo(
+                                0,
+                                duration: const Duration(milliseconds: 300),
+                                curve: Curves.easeOut,
+                              );
                             },
                             child: Text(
                               '$pageNum',
@@ -440,31 +515,56 @@ class _HomeScreenState extends State<HomeScreen> {
                               generosFormatados,
                               style: const TextStyle(color: Colors.grey),
                             ),
-                            trailing: Icon(Icons.favorite_border, size: 28.0),
-                            onTap: () async {
-                              final prefs =
-                                  await SharedPreferences.getInstance();
-                              if (_usuarioId != null) {
+                            trailing: GestureDetector(
+                              onTap: () async {
                                 final jogoDAO = JogoDAO();
+                                final nome = game.nome;
+                                final imagem = game.imagem;
 
-                                final jogo = Jogo(
-                                  nome: game.nome,
-                                  imagem: game.imagem,
-                                  usuarioId: _usuarioId!,
+                                final jaFavoritado = _favoritosIds.contains(
+                                  nome,
                                 );
 
-                                final resultado = await jogoDAO.inserir(jogo);
+                                if (jaFavoritado) {
+                                  final jogosUsuario = await jogoDAO
+                                      .listarPorUsuario(_usuarioId!);
+                                  final jogoParaRemover = jogosUsuario
+                                      .firstWhere(
+                                        (j) => j.nome == nome,
+                                        orElse: () => Jogo(
+                                          id: -1,
+                                          nome: '',
+                                          imagem: '',
+                                          usuarioId: _usuarioId!,
+                                        ),
+                                      );
 
-                                if (resultado == -1) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text(
-                                        'Jogo já está nos favoritos!',
+                                  if (jogoParaRemover.id != -1) {
+                                    await jogoDAO.deletar(jogoParaRemover.id!);
+                                    setState(() {
+                                      _favoritosIds.remove(nome);
+                                    });
+
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text(
+                                          'Jogo removido dos favoritos',
+                                        ),
+                                        backgroundColor: Colors.red,
                                       ),
-                                      backgroundColor: Colors.orange,
-                                    ),
-                                  );
+                                    );
+                                  }
                                 } else {
+                                  final novoJogo = Jogo(
+                                    nome: nome,
+                                    imagem: imagem,
+                                    usuarioId: _usuarioId!,
+                                  );
+                                  await jogoDAO.inserir(novoJogo);
+                                  setState(() {
+                                    _favoritosIds.add(nome);
+                                  });
+
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
                                       content: Text(
@@ -474,8 +574,28 @@ class _HomeScreenState extends State<HomeScreen> {
                                     ),
                                   );
                                 }
-                              }
-                            },
+                              },
+                              child: AnimatedSwitcher(
+                                duration: const Duration(milliseconds: 300),
+                                transitionBuilder: (child, animation) =>
+                                    ScaleTransition(
+                                      scale: animation,
+                                      child: child,
+                                    ),
+                                child: Icon(
+                                  _favoritosIds.contains(game.nome)
+                                      ? Icons.favorite
+                                      : Icons.favorite_border,
+                                  key: ValueKey(
+                                    _favoritosIds.contains(game.nome),
+                                  ),
+                                  color: _favoritosIds.contains(game.nome)
+                                      ? Colors.red
+                                      : Colors.white,
+                                  size: 28.0,
+                                ),
+                              ),
+                            ),
                           ),
                         );
                       },
