@@ -39,7 +39,7 @@ lib/
 ├── DAO/              # Classes DAO (JogoDAO, UsuarioDAO)
 ├── Database/         # Classe de conexão com SQLite
 ├── Screens/          # Telas do app (Login, Cadastro, Home, etc)
-├── Utils/            # Funções auxiliares (sessão, validações)
+├── API/              # Função de conexão e consumo da API
 └── main.dart         # Entrada do app
 ```
 
@@ -87,7 +87,7 @@ build/app/outputs/flutter-apk/app-release.apk
 Este app utiliza a [RAWG Video Games Database API](https://rawg.io/apidocs). Para usar, registre-se e obtenha sua `API_KEY`. Insira essa chave no endpoint de busca, por exemplo:
 
 ```dart
-final response = await http.get(Uri.parse('https://api.rawg.io/api/games?key=SUA_API_KEY&search=$query'));
+  final String _apiKey = 'sua_API;
 ```
 
 ---
